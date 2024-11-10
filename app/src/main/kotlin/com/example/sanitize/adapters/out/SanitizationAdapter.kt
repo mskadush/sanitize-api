@@ -3,7 +3,9 @@ package com.example.sanitize.adapters.out
 import com.example.sanitize.adapters.out.persistence.jpa.models.SensitiveWordRepository
 import com.example.sanitize.domain.ports.out.GetSensitiveWordsPort
 import com.example.sanitize.domain.ports.out.SaveSensitiveWordsPort
+import org.springframework.stereotype.Component
 
+@Component
 class SanitizationAdapter(
   private val sensitiveWordRepository: SensitiveWordRepository,
 ): GetSensitiveWordsPort, SaveSensitiveWordsPort {
