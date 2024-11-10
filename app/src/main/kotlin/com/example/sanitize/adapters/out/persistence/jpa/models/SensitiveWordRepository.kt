@@ -4,4 +4,4 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface SensitiveWordRepository : JpaRepository<SensitiveWordModel, String>
+interface SensitiveWordRepository : JpaRepository<SensitiveWordModel, Long>

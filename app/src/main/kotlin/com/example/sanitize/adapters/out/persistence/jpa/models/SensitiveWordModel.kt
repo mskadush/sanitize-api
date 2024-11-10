@@ -9,6 +9,6 @@ import jakarta.persistence.Id
 data class SensitiveWordModel(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  val id: String,
+  val id: Long = 0,
   val text: String,
 )

@@ -1,5 +1,6 @@
 package com.example.sanitize.adapters.out
 
+import com.example.sanitize.adapters.out.persistence.jpa.models.SensitiveWordModel
 import com.example.sanitize.adapters.out.persistence.jpa.models.SensitiveWordRepository
 import com.example.sanitize.domain.ports.out.GetSensitiveWordsPort
 import com.example.sanitize.domain.ports.out.SaveSensitiveWordsPort
@@ -243,11 +244,11 @@ class SanitizationAdapter(
 
   override fun getSensitiveWords(): Result<List<String>> {
     sensitiveWordRepository.findAll()
-    return Result.success(sensitiveWords.toList())
+    return Result.success(sensitiveWordRepository.findAll().map { it.text })
   }
 
   override fun saveSensitiveWords(words: List<String>): Result<Unit> {
-    sensitiveWords.addAll(words)
+    sensitiveWordRepository.saveAll(words.map { SensitiveWordModel(text = it) })
     return Result.success(Unit)
   }
 }
