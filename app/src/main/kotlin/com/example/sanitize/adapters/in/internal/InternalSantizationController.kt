@@ -3,6 +3,7 @@ package com.example.sanitize.adapters.`in`.internal
 import com.example.sanitize.adapters.`in`.internal.dtos.SensitiveWord
 import com.example.sanitize.adapters.`in`.internal.dtos.UpdateSensitiveWordRequest
 import com.example.sanitize.adapters.`in`.web.dtos.SanitzationResponse
+import io.swagger.v3.oas.annotations.Hidden
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
-@RestController
+@RestController("/internal")
 class InternalSantizationController {
 
   // TODO: Rest annotations
@@ -19,15 +20,15 @@ class InternalSantizationController {
   @PostMapping("/words")
   fun addSensitiveWords(
     @RequestBody request: List<SensitiveWord>
-  ): ResponseEntity<SanitzationResponse> {
+  ): ResponseEntity<Unit> {
     sensitiveWords.addAll(request.map { it.text })
-    TODO()
+    return ResponseEntity.noContent().build()
   }
 
   @DeleteMapping("/words")
   fun removeSensitiveWords(
     @RequestBody request: List<SensitiveWord>
-  ): ResponseEntity<SanitzationResponse> {
+  ): ResponseEntity<Unit> {
     sensitiveWords.removeIf { it in request.map { it.text } }
     return ResponseEntity.noContent().build()
   }

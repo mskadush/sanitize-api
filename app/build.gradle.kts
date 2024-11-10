@@ -20,6 +20,7 @@ dependencies {
 //  implementation(libs.spring.boot.starter.data.jpa)
 //  implementation(libs.spring.boot.starter.jdbc)
 //  implementation(libs.spring.boot.starter.security)
+  implementation(libs.spring.swagger)
   implementation(libs.spring.boot.starter.web)
   implementation(libs.jackson.module.kotlin)
   implementation(libs.kotlin.reflect)

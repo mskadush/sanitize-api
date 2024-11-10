@@ -1,1 +1,5 @@
 spring.application.name: flash-homework
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  paths-to-exclude: /internal
