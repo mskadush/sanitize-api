@@ -6,8 +6,8 @@ springdoc:
 spring:
   datasource:
     url: jdbc:sqlserver://localhost:1433;databaseName=santization_db
-    username: sql-username
-    password: sql-password
+    username: sa
+    password: YourStrong!Passw0rd
   jpa:
     hibernate:
       ddl-auto: update
