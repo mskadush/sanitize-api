@@ -3,3 +3,14 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
   paths-to-exclude: /internal
+spring:
+  datasource:
+    url: jdbc:sqlserver://localhost:1433;databaseName=santization_db
+    username: sql-username
+    password: sql-password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.SQLServerDialect
