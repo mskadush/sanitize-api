@@ -5,12 +5,14 @@ springdoc:
   paths-to-exclude: /internal
 spring:
   datasource:
-    url: jdbc:sqlserver://localhost:1433;databaseName=santization_db
+    url: jdbc:sqlserver://localhost:1433;databaseName=santization_db;encrypt=false # TODO: encrypt=true & setup server cert
     username: sa
     password: YourStrong!Passw0rd
+    driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     properties:
       hibernate:
         dialect: org.hibernate.dialect.SQLServerDialect
+    show-sql: true
