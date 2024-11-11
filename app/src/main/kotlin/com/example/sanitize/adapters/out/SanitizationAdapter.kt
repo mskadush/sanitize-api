@@ -243,7 +243,6 @@ class SanitizationAdapter(
   )
 
   override fun getSensitiveWords(): Result<List<String>> {
-    sensitiveWordRepository.findAll()
     return Result.success(sensitiveWordRepository.findAll().map { it.text })
   }
 

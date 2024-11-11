@@ -25,9 +25,9 @@ class SantizationController(
     val sensitiveWords = internalSantizationController.getSensitiveWords().body!!
     return ResponseEntity.ok(SanitzationResponse(
       // assume case-insensitive
-      // ignore if it's inside another word. e.g. don't redact "action" if word is "actions"
-      text = request.text.replace(sensitiveWords.joinToString("|") { it.text }.toRegex(RegexOption.IGNORE_CASE)) {
-        (0 until it.value.length).joinToString("") { "*" }.replaceFirst("*", " ").replaceAfterLast("*", " ")
+      // ignore if it's inside another word. e.g. don't redact "action" if word is "actions" using word boundary \\b
+      text = request.text.replace(sensitiveWords.joinToString("|") { "\\b${it.text}\\b" }.toRegex(setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE))) {
+        (0 until it.value.length).joinToString("") { "*" }
       }
     ))
   }
