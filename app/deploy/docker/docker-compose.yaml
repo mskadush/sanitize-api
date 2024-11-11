@@ -1,14 +1,15 @@
 services:
   sanitize-api:
-    build:
-      context: .
+    build: .
     container_name: sanitize-api
     ports:
-      - "8080:8080"
+      - "8081:8080"
     environment:
       OTEL_SDK_DISABLED: true
       SQL_USERNAME: "sa"
       SQL_PASSWORD: "YourStrong!Passw0rd"
+    volumes:
+      - ../../build/libs/app-0.0.1-SNAPSHOT.jar:/app/app.jar
   mssql:
     image: mcr.microsoft.com/mssql/server:latest
     environment:
