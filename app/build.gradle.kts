@@ -23,6 +23,8 @@ dependencies {
   implementation(libs.spring.swagger)
   implementation(libs.spring.boot.starter.web)
   implementation(libs.jackson.module.kotlin)
+  implementation(libs.flyway.core)
+  implementation(libs.flyway.mysql)
   implementation(libs.kotlin.reflect)
   runtimeOnly("com.microsoft.sqlserver:mssql-jdbc")
 //  runtimeOnly("io.micrometer:micrometer-registry-otlp")
