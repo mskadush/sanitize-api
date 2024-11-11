@@ -6,8 +6,8 @@ springdoc:
 spring:
   datasource:
     url: jdbc:sqlserver://localhost:1433;databaseName=santization_db;encrypt=false # TODO: encrypt=true & setup server cert
-    username: sa
-    password: YourStrong!Passw0rd
+    username: ${SQL_USERNAME}
+    password: ${SQL_PASSWORD}
     driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
   jpa:
     hibernate:

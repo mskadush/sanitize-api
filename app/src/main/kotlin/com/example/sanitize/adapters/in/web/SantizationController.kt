@@ -5,6 +5,7 @@ import com.example.sanitize.adapters.`in`.web.dtos.SanitzationRequest
 import com.example.sanitize.adapters.`in`.web.dtos.SanitzationResponse
 import io.swagger.v3.oas.annotations.Operation
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
