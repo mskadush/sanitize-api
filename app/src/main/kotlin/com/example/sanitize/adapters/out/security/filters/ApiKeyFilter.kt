@@ -4,14 +4,20 @@ import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.access.AccessDeniedException
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.OncePerRequestFilter
-
 
 class ApiKeyFilter: OncePerRequestFilter() {
 
   override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
 
     if (isUserAllowed(request.getHeader("X-Api-Key"))) {
+      val context = SecurityContextHolder.createEmptyContext()
+      context.authentication = UsernamePasswordAuthenticationToken("username", "password", mutableListOf(SimpleGrantedAuthority("API_USER")))
+
+      SecurityContextHolder.setContext(context)
       filterChain.doFilter(request, response)
       return
     }
