@@ -4,8 +4,9 @@ import com.example.sanitize.adapters.`in`.internal.InternalSantizationController
 import com.example.sanitize.adapters.`in`.web.dtos.SanitzationRequest
 import com.example.sanitize.adapters.`in`.web.dtos.SanitzationResponse
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.enums.ParameterIn
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
@@ -15,10 +16,13 @@ class SantizationController(
   val internalSantizationController: InternalSantizationController,
 ) {
 
-  // TODO: Rest annotations
-  // TODO: Swagger annotation
   @PostMapping("/sanitize")
-  @Operation(description = "Sanitize given input based off set words to redact.")
+  @Operation(
+    description = "Sanitize given input based off set words to redact.",
+    parameters = [
+      Parameter(name = "x-api-key", `in` = ParameterIn.HEADER, required = true)
+    ]
+  )
   fun sanitize(
     @RequestBody request: SanitzationRequest
   ): ResponseEntity<SanitzationResponse> {
@@ -27,7 +31,8 @@ class SantizationController(
     return ResponseEntity.ok(SanitzationResponse(
       // assume case-insensitive
       // ignore if it's inside another word. e.g. don't redact "action" if word is "actions" using word boundary \\b
-      text = request.text.replace(sensitiveWords.joinToString("|") { "\\b${it.text}\\b" }.toRegex(setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE))) {
+      text = request.text.replace(sensitiveWords.joinToString("|") { "\\b${it.text.replace("\"", "")}\\b" }
+        .toRegex(setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE))) {
         (0 until it.value.length).joinToString("") { "*" }
       }
     ))

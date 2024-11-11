@@ -13,7 +13,7 @@ class ApiKeyFilter: OncePerRequestFilter() {
 
   override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
 
-    if (isUserAllowed(request.getHeader("X-Api-Key"))) {
+    if (isUserAllowed(request.getHeader("X-Api-Key") ?: "")) {
       val context = SecurityContextHolder.createEmptyContext()
       context.authentication = UsernamePasswordAuthenticationToken("username", "password", mutableListOf(SimpleGrantedAuthority("API_USER")))
 
