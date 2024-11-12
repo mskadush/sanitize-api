@@ -248,7 +248,7 @@ class SanitizationAdapter(
     ,"SELECT * FROM"
   )
 
-  override fun getSensitiveWords(): Result<List<SensitiveWord>> {
+  override fun getAllSensitiveWords(): Result<List<SensitiveWord>> {
     return Result.success(sensitiveWordRepository.findAll().map { it.toSensitiveWord() })
   }
 

@@ -19,12 +19,16 @@ class SanitizationService(
   private val deleteSensitiveWordsPort: DeleteSensitiveWordsPort,
   private val changeSensitiveWordsPort: ChangeSensitiveWordsPort,
 ): CreateSensitiveWordsUseCase, GetSensitiveWordsUseCase, DeleteSensitiveWordsUseCase, ChangeSensitiveWordsUseCase {
+
   override fun createSensitiveWords(words: List<String>): Result<List<SensitiveWord>> {
     return createSensitiveWordsPort.createSensitiveWords(words)
   }
 
-  override fun getSensitiveWords(): Result<List<SensitiveWord>> {
-   return getSensitiveWordsPort.getSensitiveWords()
+  override fun getSensitiveWords(wordIds: List<Long>): Result<List<SensitiveWord>> {
+    if (wordIds.isNotEmpty()) {
+      return getSensitiveWordsPort.getSensitiveWords(wordIds)
+    }
+   return getSensitiveWordsPort.getAllSensitiveWords()
   }
 
   override fun deleteSensitiveWords(wordIds: List<Long>): Result<List<SensitiveWord>> {
@@ -32,10 +36,9 @@ class SanitizationService(
     return Result.success(words)
   }
 
-  override fun changeSensitiveWords(request: ChangeWordRequest): Result<List<SensitiveWord>> {
-    val word = getSensitiveWordsPort.getSensitiveWords(wordIds = listOf(request.wordId)).getOrThrow().single()
-
-    TODO("Not yet implemented")
+  override fun changeSensitiveWords(request: ChangeWordRequest): Result<SensitiveWord> {
+    val word = changeSensitiveWordsPort.changeSensitiveWords(request).getOrThrow()
+    return Result.success(word)
   }
 
 }

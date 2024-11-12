@@ -1,8 +1,8 @@
 package com.example.sanitize.adapters.`in`.web
 
-import com.example.sanitize.adapters.`in`.internal.InternalSantizationController
 import com.example.sanitize.adapters.`in`.web.dtos.SanitzationRequest
 import com.example.sanitize.adapters.`in`.web.dtos.SanitzationResponse
+import com.example.sanitize.domain.ports.`in`.GetSensitiveWordsUseCase
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.enums.ParameterIn
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class SantizationController(
-  val internalSantizationController: InternalSantizationController,
+  val getSensitiveWordsUseCase: GetSensitiveWordsUseCase,
 ) {
 
   @PostMapping("/sanitize")
@@ -27,7 +27,7 @@ class SantizationController(
     @RequestBody request: SanitzationRequest
   ): ResponseEntity<SanitzationResponse> {
 
-    val sensitiveWords = internalSantizationController.getSensitiveWords().body!!
+    val sensitiveWords = getSensitiveWordsUseCase.getSensitiveWords(listOf()).getOrThrow() // TODO: handle exception
     return ResponseEntity.ok(SanitzationResponse(
       // assume case-insensitive
       // ignore if it's inside another word. e.g. don't redact "action" if word is "actions" using word boundary \\b
