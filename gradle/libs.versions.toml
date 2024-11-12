@@ -15,7 +15,16 @@ kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
 flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flyway" }
 flyway-mysql = { module = "org.flywaydb:flyway-sqlserver", version.ref = "flyway" }
 
-
+# testing
+testing-mockk = { module = "io.mockk:mockk", version = "1.13.13"}
+testing-spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
+testing-spring-boot-testcontainers = { module = "org.springframework.boot:spring-boot-testcontainers" }
+testing-kotlin-test-junit5 = { module = "org.jetbrains.kotlin:kotlin-test-junit5" }
+testing-spring-restdocs-mockmvc = { module = "org.springframework.restdocs:spring-restdocs-mockmvc" }
+testing-spring-security-test = { module = "org.springframework.security:spring-security-test" }
+testing-junit-jupiter = { module = "org.testcontainers:junit-jupiter" }
+testing-mssqlserver = { module = "org.testcontainers:mssqlserver" }
+testing-junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }

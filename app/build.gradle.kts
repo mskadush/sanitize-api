@@ -28,14 +28,16 @@ dependencies {
   implementation(libs.kotlin.reflect)
   runtimeOnly("com.microsoft.sqlserver:mssql-jdbc")
 //  runtimeOnly("io.micrometer:micrometer-registry-otlp")
-  testImplementation("org.springframework.boot:spring-boot-starter-test")
-  testImplementation("org.springframework.boot:spring-boot-testcontainers")
-  testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-  testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
-  testImplementation("org.springframework.security:spring-security-test")
-  testImplementation("org.testcontainers:junit-jupiter")
-  testImplementation("org.testcontainers:mssqlserver")
-  testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+  testImplementation(libs.testing.spring.boot.starter.test)
+  testImplementation(libs.testing.spring.boot.testcontainers)
+  testImplementation(libs.testing.kotlin.test.junit5)
+  testImplementation(libs.testing.spring.restdocs.mockmvc)
+  testImplementation(libs.testing.spring.security.test)
+  testImplementation(libs.testing.junit.jupiter)
+  testImplementation(libs.testing.mssqlserver)
+  testRuntimeOnly(libs.testing.junit.platform.launcher)
+  testImplementation(libs.testing.mockk)
+
 }
 
 kotlin {

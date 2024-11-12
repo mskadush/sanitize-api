@@ -1,5 +1,6 @@
 package com.example.sanitize.adapters.`in`.internal
 
+import com.example.sanitize.adapters.`in`.internal.dtos.CreateSensitiveWordRequest
 import com.example.sanitize.adapters.`in`.internal.dtos.SensitiveWordDto
 import com.example.sanitize.adapters.`in`.internal.dtos.SensitiveWordDto.Companion.toSensitiveWordDto
 import com.example.sanitize.adapters.`in`.internal.dtos.UpdateSensitiveWordRequest
@@ -13,13 +14,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.enums.ParameterIn
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/internal")
@@ -34,13 +29,12 @@ class InternalSantizationController(
   // TODO: Swagger annotation
   @PostMapping("/words")
   @Operation(
-    description = "Sanitize given input based off set words to redact.",
     parameters = [
       Parameter(name = "x-internal-api-key", `in` = ParameterIn.HEADER, required = true)
     ]
   )
   fun addSensitiveWords(
-    @RequestBody request: List<SensitiveWordDto>
+    @RequestBody request: List<CreateSensitiveWordRequest>
   ): ResponseEntity<Unit> {
     createSensitiveWordsUseCase.createSensitiveWords(request.map { it.text })
     return ResponseEntity.noContent().build()
@@ -48,7 +42,6 @@ class InternalSantizationController(
 
   @DeleteMapping("/words")
   @Operation(
-    description = "Sanitize given input based off set words to redact.",
     parameters = [
       Parameter(name = "x-internal-api-key", `in` = ParameterIn.HEADER, required = true)
     ]
@@ -62,29 +55,26 @@ class InternalSantizationController(
 
   @GetMapping("/words")
   @Operation(
-    description = "Sanitize given input based off set words to redact.",
     parameters = [
       Parameter(name = "x-internal-api-key", `in` = ParameterIn.HEADER, required = true)
     ]
   )
-  fun getSensitiveWords(
-  ): ResponseEntity<List<SensitiveWordDto>> {
+  fun getSensitiveWords(): ResponseEntity<List<SensitiveWordDto>> {
     return ResponseEntity.ok(getSensitiveWordsUseCase.getSensitiveWords(listOf()).getOrElse { throw WordError("Failed to get words.") }.map {
       it.toSensitiveWordDto()
     })
   }
 
-  @PutMapping("/words")
+  @PutMapping("/words/{wordId}")
   @Operation(
-    description = "Sanitize given input based off set words to redact.",
     parameters = [
       Parameter(name = "x-internal-api-key", `in` = ParameterIn.HEADER, required = true)
     ]
   )
   fun updateSensitiveWords(
-    @RequestBody request: UpdateSensitiveWordRequest
+    @RequestBody request: UpdateSensitiveWordRequest, @PathVariable wordId: Long
   ): ResponseEntity<SensitiveWordDto> {
-    val word = changeSensitiveWordsUseCase.changeSensitiveWords(request = ChangeWordRequest(request.currentValue.id, request.newValue.text)).getOrElse { throw WordError("Failed to update word") }
+    val word = changeSensitiveWordsUseCase.changeSensitiveWords(request = ChangeWordRequest(wordId = wordId, request.newValue)).getOrElse { throw WordError("Failed to update word") }
     return ResponseEntity.ok(word.toSensitiveWordDto())
   }
 }
