@@ -5,3 +5,4 @@ springdoc: # only show swagger in local development
   api-docs:
     enabled: true
     path: /v3/api-docs
+  paths-to-match: /**
