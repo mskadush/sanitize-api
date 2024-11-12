@@ -17,22 +17,26 @@ class SecurityConfig {
   @Bean
   fun filterChain(http: HttpSecurity): SecurityFilterChain {
     http {
+      // disable since it causes 403s and we are not gonna use sessions
       csrf {
-        disable() // disable since it causes 403s and we are not gonna use sessions
+        disable()
       }
+      requestCache {
+        requestCache = NullRequestCache()
+      }
+
       authorizeHttpRequests {
         authorize("/sanitize", hasAuthority("API_USER"))
         authorize("/internal/**", hasAuthority("INTERNAL_API_USER"))
 
+        // swagger rules
         authorize("/swagger-ui/**", permitAll)
         authorize("/error", permitAll)
         authorize("/v3/api-docs/**", permitAll)
         authorize("/favicon.ico", permitAll)
       }
-      requestCache {
-        requestCache = NullRequestCache()
-      }
     }
+
     http.addFilterBefore(ApiKeyFilter(), AuthorizationFilter::class.java)
     return http.build()
   }
