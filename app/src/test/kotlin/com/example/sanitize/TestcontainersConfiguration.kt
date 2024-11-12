@@ -12,7 +12,7 @@ class TestcontainersConfiguration {
   @Bean
   @ServiceConnection
   fun sqlServerContainer(): MSSQLServerContainer<*> {
-    return MSSQLServerContainer(DockerImageName.parse("mcr.microsoft.com/mssql/server:latest"))
+    return MSSQLServerContainer(DockerImageName.parse("mcr.microsoft.com/mssql/server:latest")).acceptLicense().withPassword("Aa123456@")
   }
 
 }

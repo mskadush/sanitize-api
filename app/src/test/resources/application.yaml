@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    url: jdbc:sqlserver://localhost:1433;databaseName=santization_db;encrypt=false # TODO: encrypt=true & setup server cert & env var
+    username: sa
+    password: Aa123456@
+  flyway:
+    enabled: false
