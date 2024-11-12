@@ -7,6 +7,7 @@ import com.example.sanitize.domain.models.WordError
 import com.example.sanitize.domain.ports.`in`.ChangeSensitiveWordsUseCase
 import com.example.sanitize.domain.ports.`in`.GetSensitiveWordsUseCase
 import com.example.sanitize.domain.ports.`in`.CreateSensitiveWordsUseCase
+import com.example.sanitize.domain.ports.`in`.DeleteSensitiveWordsUseCase
 import com.example.sanitize.domain.requests.ChangeWordRequest
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -26,6 +27,7 @@ class InternalSantizationController(
   private val getSensitiveWordsUseCase: GetSensitiveWordsUseCase,
   private val createSensitiveWordsUseCase: CreateSensitiveWordsUseCase,
   private val changeSensitiveWordsUseCase: ChangeSensitiveWordsUseCase,
+  private val deleteSensitiveWordsUseCase: DeleteSensitiveWordsUseCase,
 ) {
 
   // TODO: Rest annotations
@@ -45,14 +47,26 @@ class InternalSantizationController(
   }
 
   @DeleteMapping("/words")
+  @Operation(
+    description = "Sanitize given input based off set words to redact.",
+    parameters = [
+      Parameter(name = "x-internal-api-key", `in` = ParameterIn.HEADER, required = true)
+    ]
+  )
   fun removeSensitiveWords(
     @RequestBody request: List<Long>
-  ): ResponseEntity<Unit> {
-    getSensitiveWordsUseCase.getSensitiveWords(word).getOrElse { throw WordError("Failed to get words.") }
-    return ResponseEntity.noContent().build()
+  ): ResponseEntity<List<SensitiveWordDto>> {
+    val deletedWords = deleteSensitiveWordsUseCase.deleteSensitiveWords(request).getOrElse { throw WordError("Failed to delete words.") }
+    return ResponseEntity.ok(deletedWords.map { it.toSensitiveWordDto() })
   }
 
   @GetMapping("/words")
+  @Operation(
+    description = "Sanitize given input based off set words to redact.",
+    parameters = [
+      Parameter(name = "x-internal-api-key", `in` = ParameterIn.HEADER, required = true)
+    ]
+  )
   fun getSensitiveWords(
   ): ResponseEntity<List<SensitiveWordDto>> {
     return ResponseEntity.ok(getSensitiveWordsUseCase.getSensitiveWords(listOf()).getOrElse { throw WordError("Failed to get words.") }.map {
@@ -61,6 +75,12 @@ class InternalSantizationController(
   }
 
   @PutMapping("/words")
+  @Operation(
+    description = "Sanitize given input based off set words to redact.",
+    parameters = [
+      Parameter(name = "x-internal-api-key", `in` = ParameterIn.HEADER, required = true)
+    ]
+  )
   fun updateSensitiveWords(
     @RequestBody request: UpdateSensitiveWordRequest
   ): ResponseEntity<SensitiveWordDto> {

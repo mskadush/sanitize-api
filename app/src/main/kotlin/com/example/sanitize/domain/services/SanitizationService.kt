@@ -31,11 +31,13 @@ class SanitizationService(
    return getSensitiveWordsPort.getAllSensitiveWords()
   }
 
+  // TODO: Handle partial failures
   override fun deleteSensitiveWords(wordIds: List<Long>): Result<List<SensitiveWord>> {
     val words = deleteSensitiveWordsPort.deleteSensitiveWords(wordIds = wordIds).getOrThrow()
     return Result.success(words)
   }
 
+  // TODO: Handle partial failures
   override fun changeSensitiveWords(request: ChangeWordRequest): Result<SensitiveWord> {
     val word = changeSensitiveWordsPort.changeSensitiveWords(request).getOrThrow()
     return Result.success(word)
