@@ -9,6 +9,7 @@
 - Migration script for setup
 #### env vars
 - db creds
+- active profile
 #### AUTH
 - Roles & spring security
 - Global exception handling

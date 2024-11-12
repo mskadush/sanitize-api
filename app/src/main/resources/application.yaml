@@ -3,10 +3,10 @@ springdoc:
   swagger-ui:
     path: /swagger-ui
     enabled: true
-  paths-to-exclude: /internal/**
   api-docs:
     enabled: true
     path: /v3/api-docs
+  paths-to-match: /sanitize
 spring:
   datasource:
     url: jdbc:sqlserver://localhost:1433;databaseName=santization_db;encrypt=false # TODO: encrypt=true & setup server cert & env var

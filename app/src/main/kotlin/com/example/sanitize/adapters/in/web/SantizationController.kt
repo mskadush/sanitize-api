@@ -2,7 +2,9 @@ package com.example.sanitize.adapters.`in`.web
 
 import com.example.sanitize.adapters.`in`.web.dtos.SanitzationRequest
 import com.example.sanitize.adapters.`in`.web.dtos.SanitzationResponse
+import com.example.sanitize.domain.models.WordError
 import com.example.sanitize.domain.ports.`in`.GetSensitiveWordsUseCase
+import com.example.sanitize.domain.ports.`in`.SanitizeTextUseCase
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.enums.ParameterIn
@@ -13,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class SantizationController(
-  val getSensitiveWordsUseCase: GetSensitiveWordsUseCase,
+  val sanitizeTextUseCase: SanitizeTextUseCase,
 ) {
 
   @PostMapping("/sanitize")
@@ -26,15 +28,7 @@ class SantizationController(
   fun sanitize(
     @RequestBody request: SanitzationRequest
   ): ResponseEntity<SanitzationResponse> {
-
-    val sensitiveWords = getSensitiveWordsUseCase.getSensitiveWords(listOf()).getOrThrow() // TODO: handle exception
-    return ResponseEntity.ok(SanitzationResponse(
-      // assume case-insensitive
-      // ignore if it's inside another word. e.g. don't redact "action" if word is "actions" using word boundary \\b
-      text = request.text.replace(sensitiveWords.joinToString("|") { "\\b${it.text.replace("\"", "")}\\b" }
-        .toRegex(setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE))) {
-        (0 until it.value.length).joinToString("") { "*" }
-      }
-    ))
+    val sanitizedText = sanitizeTextUseCase.sanitizeText(request.text).getOrElse { throw WordError("Failed to sanitize text") } // TODO: handle exception
+    return ResponseEntity.ok(SanitzationResponse(text = sanitizedText))
   }
 }
