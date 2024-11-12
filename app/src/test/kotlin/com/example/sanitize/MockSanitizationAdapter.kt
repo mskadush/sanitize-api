@@ -251,8 +251,9 @@ class MockSanitizationAdapter : GetSensitiveWordsPort, CreateSensitiveWordsPort,
 
   override fun createSensitiveWords(words: List<String>): Result<List<SensitiveWord>> {
     val numWords = sensitiveWords.size.toLong()
-    sensitiveWords.addAll(words.mapIndexed { idx, word -> SensitiveWord(id = idx + numWords, text = word) })
-    return Result.success(sensitiveWords)
+    val newWords = words.mapIndexed { idx, word -> SensitiveWord(id = idx + numWords, text = word) }
+    sensitiveWords.addAll(newWords)
+    return Result.success(newWords)
   }
 
   override fun deleteSensitiveWords(wordIds: List<Long>): Result<List<SensitiveWord>> {
