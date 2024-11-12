@@ -1,6 +1,7 @@
 #### Docker container
 - docker file
 - CICD
+- generate certs into certs folder
 #### OTeL
 - OTLP demo
 #### MSSQL config

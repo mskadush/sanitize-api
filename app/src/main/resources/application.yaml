@@ -9,7 +9,7 @@ springdoc:
   paths-to-match: /sanitize
 spring:
   datasource:
-    url: jdbc:sqlserver://localhost:1433;databaseName=santization_db;encrypt=false # TODO: encrypt=true & setup server cert & env var
+    url: jdbc:sqlserver://localhost:1433;databaseName=santization_db;encrypt=true;integratedSecurity=true;trustServerCertificate=true;
     username: ${SQL_USERNAME}
     password: ${SQL_PASSWORD}
     driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
@@ -32,5 +32,4 @@ logging:
 otel:
   exporter:
     otlp:
-      logs:
-        endpoint: http://localhost:53062
+        endpoint: http://localhost:4318

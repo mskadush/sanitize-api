@@ -20,6 +20,14 @@ services:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=YourStrong!Passw0rd
       - MSSQL_PID=Express
+      - MSSQL_TLS_CERTIFICATE=/etc/ssl/certs/mssql-selfsigned.crt
+      - MSSQL_TLS_PRIVATE_KEY=/etc/ssl/certs/mssql-selfsigned.key
+#      - MSSQL_TLS_TRUST_CERTIFICATES=/etc/ssl/certs/mssql-selfsigned.crt  # Optional, for mutual TLS
+      - MSSQL_ENABLE_HADR=0  # Disable high availability if not needed
+      - MSSQL_TLS_VERSION=1.2  # Specify TLS version if needed
+    volumes:
+      - ./certs:/etc/ssl/certs  # Mount the certs directory to the container
+    command: [ "sqlservr", "--tls-cert", "/etc/ssl/certs/mssql-selfsigned.crt", "--tls-key", "/etc/ssl/certs/mssql-selfsigned.key" ]
     ports:
       - "1433:1433"
   collector:
