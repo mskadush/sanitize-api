@@ -28,7 +28,7 @@ class SantizationController(
   fun sanitize(
     @RequestBody request: SanitzationRequest
   ): ResponseEntity<SanitzationResponse> {
-    val sanitizedText = sanitizeTextUseCase.sanitizeText(request.text).getOrElse { throw WordError("Failed to sanitize text") } // TODO: handle exception
+    val sanitizedText = sanitizeTextUseCase.sanitizeText(request.text).getOrElse { throw WordError("Failed to sanitize text") }
     return ResponseEntity.ok(SanitzationResponse(text = sanitizedText))
   }
 }
