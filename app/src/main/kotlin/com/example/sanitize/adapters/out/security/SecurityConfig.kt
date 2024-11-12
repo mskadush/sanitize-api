@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.web.access.intercept.AuthorizationFilter
+import org.springframework.security.web.savedrequest.NullRequestCache
 
 @Configuration
 @EnableWebSecurity
@@ -22,6 +23,14 @@ class SecurityConfig {
       authorizeHttpRequests {
         authorize("/sanitize", hasAuthority("API_USER"))
         authorize("/internal/**", hasAuthority("INTERNAL_API_USER"))
+
+        authorize("/swagger-ui/**", permitAll)
+        authorize("/error", permitAll)
+        authorize("/v3/api-docs/**", permitAll)
+        authorize("/favicon.ico", permitAll)
+      }
+      requestCache {
+        requestCache = NullRequestCache()
       }
     }
     http.addFilterBefore(ApiKeyFilter(), AuthorizationFilter::class.java)

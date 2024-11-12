@@ -1,0 +1,7 @@
+springdoc: # only show swagger in local development
+  swagger-ui:
+    path: /swagger-ui
+    enabled: true
+  api-docs:
+    enabled: true
+    path: /v3/api-docs

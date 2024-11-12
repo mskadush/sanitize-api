@@ -31,10 +31,8 @@ class ApiKeyFilter: OncePerRequestFilter() {
       context.authentication = UsernamePasswordAuthenticationToken("", "", mutableListOf(SimpleGrantedAuthority(role)))
 
       SecurityContextHolder.setContext(context)
-      filterChain.doFilter(request, response)
-      return
     }
-    throw AccessDeniedException("User not allowed")
+    filterChain.doFilter(request, response)
   }
 
   // TODO: handle this using API keys in DB and get role attached to API key

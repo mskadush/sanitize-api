@@ -1,11 +1,15 @@
 spring.application.name: flash-homework
 springdoc:
   swagger-ui:
-    path: /swagger-ui.html
-  paths-to-exclude: /internal
+    path: /swagger-ui
+    enabled: true
+  paths-to-exclude: /internal/**
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
 spring:
   datasource:
-    url: jdbc:sqlserver://localhost:1433;databaseName=santization_db;encrypt=false # TODO: encrypt=true & setup server cert
+    url: jdbc:sqlserver://localhost:1433;databaseName=santization_db;encrypt=false # TODO: encrypt=true & setup server cert & env var
     username: ${SQL_USERNAME}
     password: ${SQL_PASSWORD}
     driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
@@ -24,3 +28,4 @@ spring:
 logging:
   level:
     org.flywaydb: DEBUG
+    org.springframework.security: DEBUG

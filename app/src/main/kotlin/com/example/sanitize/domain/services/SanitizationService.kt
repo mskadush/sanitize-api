@@ -20,9 +20,8 @@ class SanitizationService(
   private val changeSensitiveWordsPort: ChangeSensitiveWordsPort,
 ): CreateSensitiveWordsUseCase, GetSensitiveWordsUseCase, DeleteSensitiveWordsUseCase, ChangeSensitiveWordsUseCase {
 
-  override fun createSensitiveWords(words: List<String>): Result<List<SensitiveWord>> {
-    return createSensitiveWordsPort.createSensitiveWords(words)
-  }
+  override fun createSensitiveWords(words: List<String>): Result<List<SensitiveWord>> =
+    createSensitiveWordsPort.createSensitiveWords(words)
 
   override fun getSensitiveWords(wordIds: List<Long>): Result<List<SensitiveWord>> {
     if (wordIds.isNotEmpty()) {
@@ -32,15 +31,10 @@ class SanitizationService(
   }
 
   // TODO: Handle partial failures
-  override fun deleteSensitiveWords(wordIds: List<Long>): Result<List<SensitiveWord>> {
-    val words = deleteSensitiveWordsPort.deleteSensitiveWords(wordIds = wordIds).getOrThrow()
-    return Result.success(words)
-  }
+  override fun deleteSensitiveWords(wordIds: List<Long>): Result<List<SensitiveWord>> = deleteSensitiveWordsPort.deleteSensitiveWords(wordIds = wordIds)
 
   // TODO: Handle partial failures
-  override fun changeSensitiveWords(request: ChangeWordRequest): Result<SensitiveWord> {
-    val word = changeSensitiveWordsPort.changeSensitiveWords(request).getOrThrow()
-    return Result.success(word)
-  }
+  override fun changeSensitiveWords(request: ChangeWordRequest): Result<SensitiveWord> =
+    changeSensitiveWordsPort.changeSensitiveWords(request)
 
 }
