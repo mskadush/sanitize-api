@@ -1,15 +1,10 @@
 package com.example.sanitize.adapters.`in`.internal
 
-import com.example.sanitize.adapters.`in`.internal.dtos.SensitiveWord
+import com.example.sanitize.adapters.`in`.internal.dtos.SensitiveWordDto
 import com.example.sanitize.adapters.`in`.internal.dtos.UpdateSensitiveWordRequest
-import com.example.sanitize.adapters.`in`.web.dtos.SanitzationResponse
 import com.example.sanitize.domain.ports.`in`.GetSensitiveWordsUseCase
-import com.example.sanitize.domain.ports.`in`.SaveSensitiveWordsUseCase
-import com.example.sanitize.domain.ports.out.GetSensitiveWordsPort
-import com.example.sanitize.domain.ports.out.SaveSensitiveWordsPort
-import io.swagger.v3.oas.annotations.Hidden
+import com.example.sanitize.domain.ports.`in`.CreateSensitiveWordsUseCase
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -22,22 +17,22 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/internal")
 class InternalSantizationController(
   private val getSensitiveWordsUseCase: GetSensitiveWordsUseCase,
-  private val saveSensitiveWordsUseCase: SaveSensitiveWordsUseCase,
+  private val createSensitiveWordsUseCase: CreateSensitiveWordsUseCase,
 ) {
 
   // TODO: Rest annotations
   // TODO: Swagger annotation
   @PostMapping("/words")
   fun addSensitiveWords(
-    @RequestBody request: List<SensitiveWord>
+    @RequestBody request: List<SensitiveWordDto>
   ): ResponseEntity<Unit> {
-    saveSensitiveWordsUseCase.saveSensitiveWords(request.map { it.text })
+    createSensitiveWordsUseCase.createSensitiveWords(request.map { it.text })
     return ResponseEntity.noContent().build()
   }
 
   @DeleteMapping("/words")
   fun removeSensitiveWords(
-    @RequestBody request: List<SensitiveWord>
+    @RequestBody request: List<SensitiveWordDto>
   ): ResponseEntity<Unit> {
 //    sensitiveWords.removeIf { it in request.map { it.text } }
     return ResponseEntity.noContent().build()
@@ -45,9 +40,9 @@ class InternalSantizationController(
 
   @GetMapping("/words")
   fun getSensitiveWords(
-  ): ResponseEntity<List<SensitiveWord>> {
+  ): ResponseEntity<List<SensitiveWordDto>> {
     return ResponseEntity.ok(getSensitiveWordsUseCase.getSensitiveWords().getOrThrow().map {
-      SensitiveWord(text = it)
+      SensitiveWordDto(text = it)
     })
   }
 

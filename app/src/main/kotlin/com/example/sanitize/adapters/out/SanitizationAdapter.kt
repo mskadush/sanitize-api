@@ -2,14 +2,17 @@ package com.example.sanitize.adapters.out
 
 import com.example.sanitize.adapters.out.persistence.jpa.models.SensitiveWordModel
 import com.example.sanitize.adapters.out.persistence.jpa.models.SensitiveWordRepository
+import com.example.sanitize.domain.models.SensitiveWord
+import com.example.sanitize.domain.ports.out.ChangeSensitiveWordsPort
 import com.example.sanitize.domain.ports.out.GetSensitiveWordsPort
-import com.example.sanitize.domain.ports.out.SaveSensitiveWordsPort
+import com.example.sanitize.domain.ports.out.CreateSensitiveWordsPort
+import com.example.sanitize.domain.ports.out.DeleteSensitiveWordsPort
 import org.springframework.stereotype.Component
 
 @Component
 class SanitizationAdapter(
   private val sensitiveWordRepository: SensitiveWordRepository,
-): GetSensitiveWordsPort, SaveSensitiveWordsPort {
+): GetSensitiveWordsPort, CreateSensitiveWordsPort, DeleteSensitiveWordsPort, ChangeSensitiveWordsPort {
 
   private val sensitiveWords = mutableSetOf(
     "ACTION"
@@ -242,12 +245,21 @@ class SanitizationAdapter(
     ,"SELECT * FROM"
   )
 
-  override fun getSensitiveWords(): Result<List<String>> {
+  override fun getSensitiveWords(): Result<List<SensitiveWord>> {
     return Result.success(sensitiveWordRepository.findAll().map { it.text })
   }
 
-  override fun saveSensitiveWords(words: List<String>): Result<Unit> {
-    sensitiveWordRepository.saveAll(words.map { SensitiveWordModel(text = it) })
-    return Result.success(Unit)
+  override fun createSensitiveWords(words: List<String>): Result<List<SensitiveWord>> {
+    val sensitiveWordsDocuments = sensitiveWordRepository.saveAll(words.map { SensitiveWordModel(text = it) })
+    return Result.success(sensitiveWordsDocuments.map { it.toSensitiveWord() })
+  }
+
+  override fun deleteSensitiveWords(wordIds: List<Long>): Result<List<String>> {
+    sensitiveWordRepository.deleteAllById(wordIds.toMutableList())
+    TODO("Not yet implemented")
+  }
+
+  override fun changeSensitiveWords(oldWord: SensitiveWord, newWord: SensitiveWord): Result<List<String>> {
+    TODO("Not yet implemented")
   }
 }
