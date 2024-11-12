@@ -7,13 +7,13 @@ springdoc:
     enabled: true
     path: /v3/api-docs
   paths-to-match: /sanitize
-server:
-  ssl:
-    trust-store: classpath:ssl/custom-truststore.jks
-    trust-store-password: changeit
-    key-store: classpath:ssl/my-keystore.jks
-    key-alias: keystore
-    key-store-password: changeit
+#server:
+#  ssl:
+#    trust-store: classpath:ssl/custom-truststore.jks
+#    trust-store-password: changeit
+#    key-store: classpath:ssl/my-keystore.jks
+#    key-alias: keystore
+#    key-store-password: changeit
 spring:
   datasource:
     url: jdbc:sqlserver://localhost:1433;databaseName=santization_db;trustServerCertificate=true #;encrypt=true;integratedSecurity=true;trustServerCertificate=true;
