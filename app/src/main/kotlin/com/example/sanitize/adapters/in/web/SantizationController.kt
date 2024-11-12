@@ -3,7 +3,6 @@ package com.example.sanitize.adapters.`in`.web
 import com.example.sanitize.adapters.`in`.web.dtos.SanitzationRequest
 import com.example.sanitize.adapters.`in`.web.dtos.SanitzationResponse
 import com.example.sanitize.domain.models.WordError
-import com.example.sanitize.domain.ports.`in`.GetSensitiveWordsUseCase
 import com.example.sanitize.domain.ports.`in`.SanitizeTextUseCase
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter

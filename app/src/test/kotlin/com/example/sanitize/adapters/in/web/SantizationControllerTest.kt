@@ -10,7 +10,4 @@ class SantizationControllerTest {
   fun sanitize() {
   }
 
-  @Test
-  fun getSanitizeTextUseCase() {
-  }
 }

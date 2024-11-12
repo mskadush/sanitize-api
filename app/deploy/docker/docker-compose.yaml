@@ -1,3 +1,5 @@
+version: "4.0"
+
 services:
   sanitize-api:
     build: .
@@ -8,6 +10,8 @@ services:
       OTEL_SDK_DISABLED: true
       SQL_USERNAME: "sa"
       SQL_PASSWORD: "YourStrong!Passw0rd"
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://localhost:3000
+      OTEL_LOGS_EXPORTER: otlp
     volumes:
       - ../../build/libs/app-0.0.1-SNAPSHOT.jar:/app/app.jar
   mssql:
@@ -18,3 +22,37 @@ services:
       - MSSQL_PID=Express
     ports:
       - "1433:1433"
+  collector:
+    image: otel/opentelemetry-collector-contrib:0.96.0
+    command: [ "--config=/etc/otelcol/config.yml" ]
+    volumes:
+      - ./otel-config.yaml:/etc/otelcol/config.yml
+    ports:
+      - "4317:4317" # OTLP gRPC receiver
+      - "4318:4318" # OTLP http receiver
+    depends_on:
+      - tempo
+      - loki
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    command:
+      - -config.file=/etc/loki/local-config.yaml
+    ports:
+      - "3100:3100"
+  tempo:
+    image: grafana/tempo:1.5.0
+    command: ["--target=all", "--storage.trace.backend=local", "--storage.trace.local.path=/var/tempo", "--multitenancy.enabled=false", "--search.enabled=true"]
+    ports:
+      - "8081:80"
+  grafana:
+    image: grafana/grafana:9.1.5
+    volumes:
+      - ./config/grafana:/etc/grafana/provisioning/datasources
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+      - GF_FEATURE_TOGGLES_ENABLE=tempoServiceGraph tempoSearch tempoBackendSearch tempoApmTable
+    ports:
+      - "3000:3000"
