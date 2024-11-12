@@ -7,6 +7,10 @@ springdoc:
     enabled: true
     path: /v3/api-docs
   paths-to-match: /sanitize
+server:
+  ssl:
+    trust-store: classpath:ssl/custom-truststore.jks
+    trust-store-password: changeit
 spring:
   datasource:
     url: jdbc:sqlserver://localhost:1433;databaseName=santization_db;encrypt=true;integratedSecurity=true;trustServerCertificate=true;
@@ -25,6 +29,9 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
     validate-on-migrate: true
+    url: jdbc:sqlserver://localhost:1433;databaseName=santization_db #;encrypt=true;integratedSecurity=true;trustServerCertificate=true;
+    user: ${SQL_USERNAME}
+    password: ${SQL_PASSWORD}
 logging:
   level:
     org.flywaydb: DEBUG

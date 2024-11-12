@@ -2,6 +2,7 @@
 - docker file
 - CICD
 - generate certs into certs folder
+- how to rotate certs
 #### OTeL
 - OTLP demo
 #### MSSQL config
