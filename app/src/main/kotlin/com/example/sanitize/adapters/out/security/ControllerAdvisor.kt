@@ -8,7 +8,7 @@ import java.time.LocalDateTime
 
 
 @RestControllerAdvice
-class ControllerAdvisor{
+class ControllerAdvisor {
 
   @ExceptionHandler(Throwable::class)
   fun generalException(
