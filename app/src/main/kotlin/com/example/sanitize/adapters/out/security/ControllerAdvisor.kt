@@ -17,7 +17,6 @@ class ControllerAdvisor{
     return (mapOf(
       "timestamp" to LocalDateTime.now().toString(),
       "message" to (ex.message ?: "Internal Error"),
-      "request-id" to (request.getHeader("X-Internal-Api-Key") ?: ""),
       "status" to "500",
     ))
   }
@@ -30,7 +29,6 @@ class ControllerAdvisor{
     return (mapOf(
       "timestamp" to LocalDateTime.now().toString(),
       "message" to ex.message,
-      "request-id" to (request.getHeader("X-Api-Key") ?: ""),
       "status" to "400",
     ))
   }
