@@ -50,7 +50,13 @@ services:
       - "3100:3100"
   tempo:
     image: grafana/tempo:1.5.0
-    command: ["--target=all", "--storage.trace.backend=local", "--storage.trace.local.path=/var/tempo", "--multitenancy.enabled=false", "--search.enabled=true"]
+    volumes:
+      - ./config/tempo/config.yaml:/etc/tempo/config.yaml
+    command: [
+      "--multitenancy.enabled=false",
+      "--search.enabled=true",
+      "-config.file=/etc/tempo/config.yaml",
+    ]
     ports:
       - "8081:80"
   grafana:

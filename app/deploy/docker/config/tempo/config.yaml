@@ -1,0 +1,9 @@
+target: all
+storage:
+  trace:
+    backend: local
+    local:
+      path: /var/tempo
+query_frontend:
+  search:
+    max_duration: 72h
