@@ -21,7 +21,7 @@ class SecurityConfig {
       }
       authorizeHttpRequests {
         authorize("/sanitize", hasAuthority("API_USER"))
-        authorize("/internal", hasAuthority("API_USER"))
+        authorize("/internal/**", hasAuthority("INTERNAL_API_USER"))
       }
     }
     http.addFilterBefore(ApiKeyFilter(), AuthorizationFilter::class.java)
