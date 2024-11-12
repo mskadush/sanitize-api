@@ -28,6 +28,9 @@ dependencies {
   implementation(libs.kotlin.reflect)
   runtimeOnly(libs.mssql.jdbc)
   runtimeOnly(libs.micrometer.registry.otlp)
+  implementation(platform(libs.opentelemetry.bom))
+  // Add a dependency on an artifact whose version is managed by the bom
+  implementation(libs.spring.boot.opentelemetry)
   testImplementation(libs.testing.spring.boot.starter.test)
   testImplementation(libs.testing.spring.boot.testcontainers)
   testImplementation(libs.testing.kotlin.test.junit5)
@@ -39,7 +42,11 @@ dependencies {
   testImplementation(libs.testing.mockk)
 
 }
-
+dependencyManagement {
+  imports {
+    mavenBom("io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom:2.6.0")
+  }
+}
 kotlin {
   compilerOptions {
     freeCompilerArgs.addAll("-Xjsr305=strict")

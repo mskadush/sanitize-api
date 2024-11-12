@@ -29,3 +29,8 @@ logging:
   level:
     org.flywaydb: DEBUG
     org.springframework.security: DEBUG
+otel:
+  exporter:
+    otlp:
+      logs:
+        endpoint: http://localhost:53062
