@@ -1,7 +1,8 @@
 package com.example.sanitize.domain.ports.out
 
 import com.example.sanitize.domain.models.SensitiveWord
+import com.example.sanitize.domain.requests.ChangeWordRequest
 
 interface ChangeSensitiveWordsPort {
-  fun changeSensitiveWords(oldWord: SensitiveWord, newWord: SensitiveWord): Result<List<String>>
+  fun changeSensitiveWords(request: ChangeWordRequest): Result<SensitiveWord>
 }

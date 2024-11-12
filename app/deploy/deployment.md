@@ -11,3 +11,4 @@
 - db creds
 #### AUTH
 - Roles & spring security
+- Global exception handling

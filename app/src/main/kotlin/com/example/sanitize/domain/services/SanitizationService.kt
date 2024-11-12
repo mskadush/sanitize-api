@@ -27,14 +27,14 @@ class SanitizationService(
    return getSensitiveWordsPort.getSensitiveWords()
   }
 
-  override fun deleteSensitiveWords(wordIds: List<Long>): Result<List<String>> {
-    deleteSensitiveWordsPort.deleteSensitiveWords(
-      wordIds = wordIds
-    )
+  override fun deleteSensitiveWords(wordIds: List<Long>): Result<List<SensitiveWord>> {
+    val words = deleteSensitiveWordsPort.deleteSensitiveWords(wordIds = wordIds).getOrThrow()
+    return Result.success(words)
   }
 
   override fun changeSensitiveWords(request: ChangeWordRequest): Result<List<SensitiveWord>> {
-    getSensitiveWordsPort.getSensitiveWords()
+    val word = getSensitiveWordsPort.getSensitiveWords(wordIds = listOf(request.wordId)).getOrThrow().single()
+
     TODO("Not yet implemented")
   }
 

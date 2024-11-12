@@ -3,10 +3,13 @@ package com.example.sanitize.adapters.out
 import com.example.sanitize.adapters.out.persistence.jpa.models.SensitiveWordModel
 import com.example.sanitize.adapters.out.persistence.jpa.models.SensitiveWordRepository
 import com.example.sanitize.domain.models.SensitiveWord
+import com.example.sanitize.domain.models.WordError
 import com.example.sanitize.domain.ports.out.ChangeSensitiveWordsPort
 import com.example.sanitize.domain.ports.out.GetSensitiveWordsPort
 import com.example.sanitize.domain.ports.out.CreateSensitiveWordsPort
 import com.example.sanitize.domain.ports.out.DeleteSensitiveWordsPort
+import com.example.sanitize.domain.requests.ChangeWordRequest
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 
 @Component
@@ -246,7 +249,12 @@ class SanitizationAdapter(
   )
 
   override fun getSensitiveWords(): Result<List<SensitiveWord>> {
-    return Result.success(sensitiveWordRepository.findAll().map { it.text })
+    return Result.success(sensitiveWordRepository.findAll().map { it.toSensitiveWord() })
+  }
+
+  override fun getSensitiveWords(wordIds: List<Long>): Result<List<SensitiveWord>> {
+    val words = sensitiveWordRepository.findAllById(wordIds.toMutableList())
+    return Result.success(words.map { it.toSensitiveWord() })
   }
 
   override fun createSensitiveWords(words: List<String>): Result<List<SensitiveWord>> {
@@ -254,12 +262,15 @@ class SanitizationAdapter(
     return Result.success(sensitiveWordsDocuments.map { it.toSensitiveWord() })
   }
 
-  override fun deleteSensitiveWords(wordIds: List<Long>): Result<List<String>> {
-    sensitiveWordRepository.deleteAllById(wordIds.toMutableList())
-    TODO("Not yet implemented")
+  override fun deleteSensitiveWords(wordIds: List<Long>): Result<List<SensitiveWord>> {
+    val words = sensitiveWordRepository.findAllById(wordIds.toMutableList())
+    sensitiveWordRepository.deleteAllById(wordIds)
+    return Result.success(words.map { it.toSensitiveWord() })
   }
 
-  override fun changeSensitiveWords(oldWord: SensitiveWord, newWord: SensitiveWord): Result<List<String>> {
-    TODO("Not yet implemented")
+  override fun changeSensitiveWords(request: ChangeWordRequest): Result<SensitiveWord> {
+    val currentWord = sensitiveWordRepository.findByIdOrNull(request.wordId) ?: return Result.failure(WordError("Word not found"))
+    val newWord = sensitiveWordRepository.save(currentWord.copy(text = request.newValue))
+    return Result.success(newWord.toSensitiveWord())
   }
 }
