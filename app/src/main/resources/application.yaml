@@ -11,9 +11,12 @@ server:
   ssl:
     trust-store: classpath:ssl/custom-truststore.jks
     trust-store-password: changeit
+    key-store: classpath:ssl/my-keystore.jks
+    key-alias: keystore
+    key-store-password: changeit
 spring:
   datasource:
-    url: jdbc:sqlserver://localhost:1433;databaseName=santization_db;encrypt=true;integratedSecurity=true;trustServerCertificate=true;
+    url: jdbc:sqlserver://localhost:1433;databaseName=santization_db;trustServerCertificate=true #;encrypt=true;integratedSecurity=true;trustServerCertificate=true;
     username: ${SQL_USERNAME}
     password: ${SQL_PASSWORD}
     driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
@@ -25,11 +28,12 @@ spring:
         dialect: org.hibernate.dialect.SQLServerDialect
     show-sql: true
   flyway:
-    enabled: true
+    enabled: false
     locations: classpath:db/migration
     baseline-on-migrate: true
     validate-on-migrate: true
-    url: jdbc:sqlserver://localhost:1433;databaseName=santization_db #;encrypt=true;integratedSecurity=true;trustServerCertificate=true;
+#    https://stackoverflow.com/a/63773348/17164601 - authenticationScheme=NTLM
+    url: jdbc:sqlserver://localhost:1433;databaseName=santization_db #;authenticationScheme=NTLM;trustServerCertificate=true #;encrypt=true;integratedSecurity=true;trustServerCertificate=true;
     user: ${SQL_USERNAME}
     password: ${SQL_PASSWORD}
 logging:
