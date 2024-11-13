@@ -2,7 +2,7 @@
 
 The **Sanitization API** is a Spring Boot Kotlin application designed to redact text for security and sanitization purposes. This API integrates with a MSSQL database, and provides customised exception handling and structured authentication.
 
-## Getting Started
+## Developing
 
 ### Running in Development Mode
 To run the application in development mode:
@@ -13,9 +13,6 @@ To run the application in development mode:
    ./gradlew app:bootRun --args='--spring.profiles.active=local'
    ```
 4. The `local` profile enables all Swagger documentation accessible.
-
-### Database Migrations
-All database migrations are handled by Flyway. Migration scripts are located in the `app/src/main/resources/db/migration` directory and are applied automatically when the application starts.
 
 ### Global Exception Handling
 Exception handling is managed at a global level:
@@ -30,15 +27,6 @@ The application uses parameterized queries to sanitize SQL inputs, reducing the 
 The application supports both internal and external API authentication:
 - Internal authentication is based on in-memory API keys bound to roles (admin, user, etc.).
 - For production, we will move API keys to the database to enhance security and scalability.
-
-### Profiles
-The application uses two primary profiles:
-- **local**: Used for development on a local machine.
-- **prod**: For live deployment; hides internal endpoints and only exposes Swagger for public APIs.
-
-### TLS Certificate Placement
-For production deployments, it's recommended to handle TLS certificates at the network edge, typically with a load balancer or ingress controller. This approach offloads certificate management from the application.
-Certificates should be rotated regularly if stored at the application layer. Use automation tools like AWS Certificate Manager for TLS certificate management to simplify rotation.
 
 ## Building
 
@@ -57,24 +45,47 @@ GitHub Actions runs the CI pipeline, covering build, test, and Docker image crea
 
 ## Deploying
 
-### Deploying on AWS EKS, ECS, or Lambda
+### Application
+
+#### Deploying on AWS EKS, ECS, or Lambda
 Once the Docker image is built, it can be deployed on AWS EKS, ECS, or Lambda. Deployment scripts and configurations should be customized based on the chosen platform (e.g. ArgoCD for EKS deployments).
 
-### Setting Up Certificates and Running MSSQL in Encrypted Mode
-To run MSSQL with TLS:
-1. Obtain a valid TLS certificate and private key (e.g., from AWS ACM, LetsEncrypt or generate one using `app/deploy/0-generate-cert.sh`). Ensuring the naming matches the expected values in the `docker-compose` file if you are using it to run MSSQL
-2. Place the certificate in a location accessible by the MSSQL application.
+#### Profiles
+The application uses two primary profiles:
+- **local**: Used for development on a local machine.
+- **prod**: For live deployment; hides internal endpoints and only exposes Swagger for public APIs.
 
-### Database Setup with AWS RDS
+#### TLS Certificate Placement
+For production deployments, it's recommended to handle TLS certificates at the network edge (e.g. Cloudflare or
+internet facing loadbalancer). This approach offloads certificate management from the application, eliminating the added
+complexity of rotating application certificates. Certificates should be rotated regularly if stored at the
+application layer.
+
+#### Logging and Monitoring with OpenTelemetry
+OpenTelemetry (OTeL) is used for logging and tracing:
+- A `docker-compose.yaml` file is available in `app/deploy/docker/docker-compose.yaml` for setting up Grafana and an
+  - OTeL collector to collect and visualize telemetry data locally for testing.
+- Configure the OTLP exporter endpoint in `application.yaml` as `otel.exporter.otlp.endpoint` to send data to an OTeL collector.
+- The configured OTeL libraries will send trace and log data to the collector
+
+### MSSQL
+
+#### Setting up MSSQL with AWS RDS
 Rather than deploying a database container, this setup uses AWS RDS for MSSQL:
 - This minimizes the need for manual certificate management and server maintenance.
 - If self-signed certificates are required, they can be generated using the provided `app/deploy/0-generate-cert.sh` script for secure connections.
 
-### Logging and Monitoring with OpenTelemetry
-OpenTelemetry (OTeL) is used for logging and tracing:
-- A `docker-compose.yaml` file is available in `app/deploy/docker/docker-compose.yaml` for setting up Grafana to collect and visualize telemetry data locally for testing.
-- Configure the OTLP exporter endpoint in `application.yaml` as `otel.exporter.otlp.endpoint` to send data to an OTeL collector.
-- The configured OTeL libraries will send trace and log data to the collector
+#### Setting up MSSQL container certificates and running in Encrypted Mode
+To run MSSQL with TLS:
+- Obtain a valid TLS certificate and private key (e.g., from AWS ACM, LetsEncrypt or generate one using
+  - `app/deploy/0-generate-cert.sh`). Ensuring the naming matches the expected values in the `docker-compose` file if
+  - you are using it to run MSSQL
+- Place the certificate in a location accessible by the MSSQL application.
+
+#### Database Authentication
+- 
+#### Database Migrations
+All database migrations are handled by Flyway. Migration scripts are located in the `app/src/main/resources/db/migration` directory and are applied automatically when the application starts.
 
 ---
 
