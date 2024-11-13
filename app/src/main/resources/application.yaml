@@ -7,18 +7,11 @@ springdoc:
     enabled: true
     path: /v3/api-docs
   paths-to-match: /sanitize
-#server:
-#  ssl:
-#    trust-store: classpath:ssl/custom-truststore.jks
-#    trust-store-password: changeit
-#    key-store: classpath:ssl/my-keystore.jks
-#    key-alias: keystore
-#    key-store-password: changeit
 spring:
   datasource:
-    url: jdbc:sqlserver://localhost:1433;databaseName=santization_db;trustServerCertificate=true #;encrypt=true;integratedSecurity=true;trustServerCertificate=true;
-    username: ${SQL_USERNAME}
-    password: ${SQL_PASSWORD}
+    url: jdbc:sqlserver://localhost:1433;databaseName=santization_db;trustServerCertificate=true
+    username: ${SQL_USERNAME:sa}
+    password: ${SQL_PASSWORD:YourStrong!Passw0rd}
     driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
   jpa:
     hibernate:
@@ -28,19 +21,15 @@ spring:
         dialect: org.hibernate.dialect.SQLServerDialect
     show-sql: true
   flyway:
-    enabled: false
+    enabled: true
     locations: classpath:db/migration
     baseline-on-migrate: true
     validate-on-migrate: true
-#    https://stackoverflow.com/a/63773348/17164601 - authenticationScheme=NTLM
-    url: jdbc:sqlserver://localhost:1433;databaseName=santization_db #;authenticationScheme=NTLM;trustServerCertificate=true #;encrypt=true;integratedSecurity=true;trustServerCertificate=true;
+    url: jdbc:sqlserver://localhost:1433;databaseName=santization_db
     user: ${SQL_USERNAME}
     password: ${SQL_PASSWORD}
 logging:
   level:
     org.flywaydb: DEBUG
     org.springframework.security: DEBUG
-otel:
-  exporter:
-    otlp:
-        endpoint: http://localhost:4318
+otel.exporter.otlp.endpoint: http://localhost:4318

@@ -7,7 +7,7 @@ on:
 
 env:
   AWS_REGION: "us-east-1"             # Replace with your AWS region
-  ECR_REPOSITORY: "your-ecr-repo-name" # Replace with your ECR repository name
+  ECR_REPOSITORY: "sanitization-api" # Replace with your ECR repository name
   IMAGE_TAG: "${{ github.sha }}"      # Tag the image with the Git SHA
 
 jobs:
