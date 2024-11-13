@@ -1,10 +1,9 @@
 IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'santization_db')
     BEGIN
-        CREATE DATABASE my_database;
+        CREATE DATABASE santization_db;
+    END
 GO
-END
-
-USE my_database;
+USE santization_db;
 GO
 
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'sensitive_word_model' AND TABLE_SCHEMA = 'dbo')
