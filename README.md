@@ -83,7 +83,10 @@ To run MSSQL with TLS:
 - Place the certificate in a location accessible by the MSSQL application.
 
 #### Database Authentication
-- 
+- Database credentials can be loaded using
+  - AWS Secrets Manager which can allow easy rotation when using aws secrets manager with spring cloud
+  - Environment variables which can allow easy, but manual, rotation when loading Kubernetes secrets in EKS
+  - HashiCorp Vault for easy, automated rotation of database secrets
 #### Database Migrations
 All database migrations are handled by Flyway. Migration scripts are located in the `app/src/main/resources/db/migration` directory and are applied automatically when the application starts.
 
