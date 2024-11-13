@@ -1,5 +1,4 @@
 #!/bin/bash
-/opt/mssql/bin/sqlservr
 
 init_db() {
   sleep 20s
