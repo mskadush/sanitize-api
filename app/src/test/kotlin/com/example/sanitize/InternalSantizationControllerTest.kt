@@ -6,6 +6,7 @@ import com.example.sanitize.adapters.`in`.internal.dtos.SensitiveWordDto.Compani
 import com.example.sanitize.adapters.`in`.internal.dtos.UpdateSensitiveWordRequest
 import com.example.sanitize.domain.ports.out.GetSensitiveWordsPort
 import org.json.JSONObject
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa
@@ -24,11 +25,40 @@ import org.springframework.http.RequestEntity
 class InternalSantizationControllerTest(
   @Autowired val restTemplate: TestRestTemplate,
   @Autowired private val getSensitiveWordsPort: GetSensitiveWordsPort,
+  @Autowired private val mockSanitizationAdapter: MockSanitizationAdapter,
 ) {
 
+  @BeforeEach
+  fun beforeEach() {
+    mockSanitizationAdapter.resetWords()
+  }
   @Test
   fun `getWords - fail when not api key provided`() {
     val result = restTemplate.getForEntity<JSONObject>("/internal/words")
+
+    result.statusCode shouldBe HttpStatus.FORBIDDEN
+
+  }
+
+  @Test
+  fun `addSensitiveWords - fail when not api key provided`() {
+    val result = restTemplate.getForEntity<JSONObject>("/internal/words")
+
+    result.statusCode shouldBe HttpStatus.FORBIDDEN
+
+  }
+
+  @Test
+  fun `updateSensitiveWords - fail when not api key provided`() {
+    val result = restTemplate.exchange<JSONObject>(RequestEntity.put("/internal/words/0").build())
+
+    result.statusCode shouldBe HttpStatus.FORBIDDEN
+
+  }
+
+  @Test
+  fun `removeSensitiveWords - fail when not api key provided`() {
+    val result = restTemplate.exchange<JSONObject>(RequestEntity.get("/internal/words/0").build())
 
     result.statusCode shouldBe HttpStatus.FORBIDDEN
 
@@ -64,9 +94,9 @@ class InternalSantizationControllerTest(
       add("X-Internal-Api-Key", "test-internal-key")
     }).build())
 
-    result.statusCode shouldBe HttpStatus.NO_CONTENT
-    result.getOrThrow().first() shouldBe originalFirstWord
-    getSensitiveWordsPort.getAllSensitiveWords().getOrThrow().none { it.id == 0 } shouldBe true
+    result.statusCode shouldBe HttpStatus.OK
+    result.body!!.single() shouldBe originalFirstWord.toSensitiveWordDto()
+    getSensitiveWordsPort.getAllSensitiveWords().getOrThrow().none { it.id == 0L } shouldBe true
     
   }
 
@@ -76,7 +106,7 @@ class InternalSantizationControllerTest(
     val newValue = "changed"
     val result = restTemplate.exchange<SensitiveWordDto>(RequestEntity.put("/internal/words/0").headers(HttpHeaders().apply {
       add("X-Internal-Api-Key", "test-internal-key")
-    }).body(listOf(UpdateSensitiveWordRequest(newValue = newValue))))
+    }).body(UpdateSensitiveWordRequest(newValue = newValue)))
 
     result.statusCode shouldBe HttpStatus.OK
     val currentValue = getSensitiveWordsPort.getAllSensitiveWords().getOrThrow()[0].text

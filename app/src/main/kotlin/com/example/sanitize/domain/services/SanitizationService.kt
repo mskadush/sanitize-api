@@ -30,8 +30,9 @@ class SanitizationService(
   }
 
   // TODO: Handle partial failures
-  override fun deleteSensitiveWords(wordIds: List<Long>): Result<List<SensitiveWord>> =
-    deleteSensitiveWordsPort.deleteSensitiveWords(wordIds = wordIds)
+  override fun deleteSensitiveWords(wordIds: List<Long>): Result<List<SensitiveWord>> {
+    return deleteSensitiveWordsPort.deleteSensitiveWords(wordIds = wordIds)
+  }
 
   // TODO: Handle partial failures
   override fun changeSensitiveWords(request: ChangeWordRequest): Result<SensitiveWord> =

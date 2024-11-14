@@ -7,10 +7,14 @@ import com.example.sanitize.domain.ports.out.CreateSensitiveWordsPort
 import com.example.sanitize.domain.ports.out.DeleteSensitiveWordsPort
 import com.example.sanitize.domain.ports.out.GetSensitiveWordsPort
 import com.example.sanitize.domain.requests.ChangeWordRequest
+import org.springframework.context.annotation.Primary
+import org.springframework.stereotype.Component
 
+@Component
+@Primary
 class MockSanitizationAdapter : GetSensitiveWordsPort, CreateSensitiveWordsPort, DeleteSensitiveWordsPort, ChangeSensitiveWordsPort {
 
-  private val sensitiveWords = mutableListOf(
+  private val _sensitiveWords = mutableListOf(
     "ACTION",
     "ADD",
     "ALL",
@@ -240,8 +244,8 @@ class MockSanitizationAdapter : GetSensitiveWordsPort, CreateSensitiveWordsPort,
     "DOUBLETABLE",
     "SELECT * FROM"
   ).mapIndexed { idx, word -> SensitiveWord(id = idx.toLong(), text = word) }.toMutableList()
-
-  override fun getAllSensitiveWords(): Result<List<SensitiveWord>> {
+  private var sensitiveWords = _sensitiveWords
+    override fun getAllSensitiveWords(): Result<List<SensitiveWord>> {
     return Result.success(sensitiveWords)
   }
 
@@ -267,5 +271,9 @@ class MockSanitizationAdapter : GetSensitiveWordsPort, CreateSensitiveWordsPort,
     var newWord: SensitiveWord? = null
     sensitiveWords.replaceAll { if (it.id ==  request.wordId) it.copy(text = request.newValue).also { newWord = it } else it }
     return newWord?.let { Result.success(it) } ?: Result.failure(WordError("Word not found"))
+  }
+
+  fun resetWords() {
+    sensitiveWords = _sensitiveWords.toMutableList()
   }
 }

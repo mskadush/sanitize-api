@@ -38,16 +38,16 @@ class InternalSantizationController(
     return ResponseEntity.noContent().build()
   }
 
-  @DeleteMapping("/words")
+  @DeleteMapping("/words/{wordId}")
   @Operation(
     parameters = [
       Parameter(name = "x-internal-api-key", `in` = ParameterIn.HEADER, required = true)
     ]
   )
   fun removeSensitiveWords(
-    @RequestBody request: List<Long>
+    @PathVariable wordId: Long,
   ): ResponseEntity<List<SensitiveWordDto>> {
-    val deletedWords = deleteSensitiveWordsUseCase.deleteSensitiveWords(request).getOrElse { throw WordError("Failed to delete words.") }
+    val deletedWords = deleteSensitiveWordsUseCase.deleteSensitiveWords(listOf(wordId)).getOrElse { throw WordError("Failed to delete words.") }
     return ResponseEntity.ok(deletedWords.map { it.toSensitiveWordDto() })
   }
 
