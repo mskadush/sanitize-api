@@ -40,6 +40,7 @@ dependencies {
   testImplementation(libs.testing.mssqlserver)
   testRuntimeOnly(libs.testing.junit.platform.launcher)
   testImplementation(libs.testing.mockk)
+  testImplementation(libs.testing.spring.mockk)
 
 }
 dependencyManagement {

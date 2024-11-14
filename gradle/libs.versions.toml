@@ -28,6 +28,8 @@ testing-spring-security-test = { module = "org.springframework.security:spring-s
 testing-junit-jupiter = { module = "org.testcontainers:junit-jupiter" }
 testing-mssqlserver = { module = "org.testcontainers:mssqlserver" }
 testing-junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+testing-spring-mockk = { module = "com.ninja-squad:springmockk", version = "3.0.1" }
+
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
