@@ -1,6 +1,7 @@
 package com.example.sanitize
 
 import com.example.sanitize.adapters.`in`.internal.dtos.SensitiveWordDto
+import com.example.sanitize.adapters.`in`.internal.dtos.SensitiveWordDto.Companion.toSensitiveWordDto
 import com.example.sanitize.domain.ports.out.GetSensitiveWordsPort
 import org.json.JSONArray
 import org.json.JSONObject
@@ -21,7 +22,7 @@ import org.springframework.http.RequestEntity
 @AutoConfigureDataJpa
 class InternalSantizationControllerTest(
   @Autowired val restTemplate: TestRestTemplate,
-  private val getSensitiveWordsPort: GetSensitiveWordsPort,
+  @Autowired private val getSensitiveWordsPort: GetSensitiveWordsPort,
 ) {
 
   @Test
@@ -40,7 +41,7 @@ class InternalSantizationControllerTest(
     }).build())
 
     result.statusCode shouldBe HttpStatus.OK
-    result.body!! shouldBe getSensitiveWordsPort.getAllSensitiveWords()
+    result.body!! shouldBe getSensitiveWordsPort.getAllSensitiveWords().getOrThrow().map { it.toSensitiveWordDto() }
   }
 
 }
