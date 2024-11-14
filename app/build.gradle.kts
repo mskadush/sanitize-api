@@ -26,6 +26,7 @@ dependencies {
   implementation(libs.flyway.core)
   implementation(libs.flyway.mysql)
   implementation(libs.kotlin.reflect)
+  implementation(libs.logging)
   runtimeOnly(libs.mssql.jdbc)
   runtimeOnly(libs.micrometer.registry.otlp)
   implementation(platform(libs.opentelemetry.bom))

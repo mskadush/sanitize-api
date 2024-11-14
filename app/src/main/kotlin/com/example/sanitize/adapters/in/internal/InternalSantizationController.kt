@@ -13,8 +13,10 @@ import com.example.sanitize.domain.requests.ChangeWordRequest
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.enums.ParameterIn
+import mu.KotlinLogging
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import kotlin.math.log
 
 @RestController
 @RequestMapping("/internal")
@@ -25,6 +27,8 @@ class InternalSantizationController(
   private val deleteSensitiveWordsUseCase: DeleteSensitiveWordsUseCase,
 ) {
 
+  private val logger = KotlinLogging.logger {  }
+
   @PostMapping("/words")
   @Operation(
     parameters = [
@@ -34,7 +38,9 @@ class InternalSantizationController(
   fun addSensitiveWords(
     @RequestBody request: List<CreateSensitiveWordRequest>
   ): ResponseEntity<Unit> {
+    logger.debug { "Adding sensitive words '${request.map { it.text }.toList()}'" }
     createSensitiveWordsUseCase.createSensitiveWords(request.map { it.text })
+    logger.debug { "Word added" }
     return ResponseEntity.noContent().build()
   }
 
@@ -47,7 +53,13 @@ class InternalSantizationController(
   fun removeSensitiveWords(
     @PathVariable wordId: Long,
   ): ResponseEntity<List<SensitiveWordDto>> {
-    val deletedWords = deleteSensitiveWordsUseCase.deleteSensitiveWords(listOf(wordId)).getOrElse { throw WordError("Failed to delete words.") }
+    logger.debug { "Removing sensitive word with id $wordId" }
+    val deletedWords = deleteSensitiveWordsUseCase.deleteSensitiveWords(listOf(wordId)).getOrElse {
+      throw WordError("Failed to delete words.").also {
+        logger.error { it.message }
+      }
+    }
+    logger.debug { "Words removed. Returning removed words" }
     return ResponseEntity.ok(deletedWords.map { it.toSensitiveWordDto() })
   }
 
@@ -58,9 +70,16 @@ class InternalSantizationController(
     ]
   )
   fun getSensitiveWords(): ResponseEntity<List<SensitiveWordDto>> {
-    return ResponseEntity.ok(getSensitiveWordsUseCase.getSensitiveWords(listOf()).getOrElse { throw WordError("Failed to get words.") }.map {
+    logger.debug { "Getting sensitive words" }
+    return ResponseEntity.ok(getSensitiveWordsUseCase.getSensitiveWords(listOf()).getOrElse {
+      throw WordError("Failed to delete words.").also {
+        logger.error { it.message }
+      }
+    }.map {
       it.toSensitiveWordDto()
-    })
+    }).also {
+      logger.debug { "Got words" }
+    }
   }
 
   @PutMapping("/words/{wordId}")
@@ -72,7 +91,13 @@ class InternalSantizationController(
   fun updateSensitiveWords(
     @RequestBody request: UpdateSensitiveWordRequest, @PathVariable wordId: Long
   ): ResponseEntity<SensitiveWordDto> {
-    val word = changeSensitiveWordsUseCase.changeSensitiveWords(request = ChangeWordRequest(wordId = wordId, request.newValue)).getOrElse { throw WordError("Failed to update word") }
+    logger.debug { "Updating sensitive word '$wordId' ${request.newValue}" }
+    val word = changeSensitiveWordsUseCase.changeSensitiveWords(request = ChangeWordRequest(wordId = wordId, request.newValue)).getOrElse {
+      throw WordError("Failed to delete words.").also {
+        logger.error { it.message }
+      }
+    }
+    logger.debug { "Updated words" }
     return ResponseEntity.ok(word.toSensitiveWordDto())
   }
 }

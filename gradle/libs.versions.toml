@@ -18,6 +18,7 @@ micrometer-registry-otlp = { module = "io.micrometer:micrometer-registry-otlp"}
 spring-boot-opentelemetry = { module = "io.opentelemetry.instrumentation:opentelemetry-spring-boot-starter" }
 opentelemetry-bom = { module = "io.opentelemetry:opentelemetry-bom", version = "1.44.1" }
 mssql-jdbc = { module = "com.microsoft.sqlserver:mssql-jdbc", version = "12.8.1.jre11" }
+logging = { module = "io.github.microutils:kotlin-logging", version = "3.0.5" }
 # testing
 testing-mockk = { module = "io.mockk:mockk", version = "1.13.13"}
 testing-spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }

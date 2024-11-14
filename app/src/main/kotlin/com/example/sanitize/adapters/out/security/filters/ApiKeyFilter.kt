@@ -3,6 +3,7 @@ package com.example.sanitize.adapters.out.security.filters
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import mu.KotlinLogging
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -11,6 +12,9 @@ import org.springframework.web.filter.OncePerRequestFilter
 
 // TODO: move auth to own module
 class ApiKeyFilter : OncePerRequestFilter() {
+
+
+  private val kLogger = KotlinLogging.logger { }
 
   // TODO: use DB
   private val keys = mapOf(
@@ -24,12 +28,14 @@ class ApiKeyFilter : OncePerRequestFilter() {
   )
 
   override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
-
+    kLogger.debug { "Validating request api key" }
     val authorities = mutableListOf<GrantedAuthority>()
     getRoleForApiKey(request.getHeader("X-Api-Key") ?: "")?.let {
+      kLogger.debug { "Found public API key. adding role" }
       authorities.add(SimpleGrantedAuthority(it))
     }
     getRoleForApiKey(request.getHeader("X-Internal-Api-Key") ?: "")?.let {
+      kLogger.debug { "Found internal API key. adding role" }
       authorities.add(SimpleGrantedAuthority(it))
     }
     val context = SecurityContextHolder.createEmptyContext()

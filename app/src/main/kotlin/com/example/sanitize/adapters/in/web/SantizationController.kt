@@ -7,6 +7,7 @@ import com.example.sanitize.domain.ports.`in`.SanitizeTextUseCase
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.enums.ParameterIn
+import mu.KotlinLogging
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController
 class SantizationController(
   val sanitizeTextUseCase: SanitizeTextUseCase,
 ) {
+
+  private val logger = KotlinLogging.logger {  }
 
   @PostMapping("/sanitize")
   @Operation(
@@ -27,7 +30,13 @@ class SantizationController(
   fun sanitize(
     @RequestBody request: SanitzationRequest
   ): ResponseEntity<SanitzationResponse> {
-    val sanitizedText = sanitizeTextUseCase.sanitizeText(request.text).getOrElse { throw WordError("Failed to sanitize text") }
+    logger.debug { "Sanitizing text" }
+    val sanitizedText = sanitizeTextUseCase.sanitizeText(request.text).getOrElse {
+      throw WordError("Failed to delete words.").also {
+        logger.error { it.message }
+      }
+    }
+    logger.debug { "Text sanitized" }
     return ResponseEntity.ok(SanitzationResponse(text = sanitizedText))
   }
 }
