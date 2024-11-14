@@ -3,6 +3,8 @@ package com.example.sanitize.domain.services
 import com.example.sanitize.MockSanitizationAdapter
 import com.example.sanitize.domain.models.SensitiveWord
 import com.example.sanitize.domain.requests.ChangeWordRequest
+import com.example.sanitize.shouldBe
+import com.example.sanitize.shouldNotBe
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
@@ -59,10 +61,4 @@ class SanitizationServiceTest {
     result.getOrThrow() shouldBe "****** is redacted"
   }
 
-  private infix fun <T,U> T?.shouldBe(other: U) {
-    assertEquals(other, this)
-  }
-  private infix fun <T,U> T?.shouldNotBe(other: U) {
-    assertNotEquals(other, this)
-  }
 }

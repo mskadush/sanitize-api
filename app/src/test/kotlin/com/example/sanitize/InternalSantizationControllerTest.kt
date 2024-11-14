@@ -1,31 +1,46 @@
 package com.example.sanitize
 
-import com.example.sanitize.adapters.out.SanitizationAdapter
-import com.example.sanitize.domain.services.SanitizationService
+import com.example.sanitize.adapters.`in`.internal.dtos.SensitiveWordDto
+import com.example.sanitize.domain.ports.out.GetSensitiveWordsPort
+import org.json.JSONArray
+import org.json.JSONObject
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Import
-import org.springframework.http.MediaType
-import org.springframework.orm.hibernate5.LocalSessionFactoryBean
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.web.client.TestRestTemplate
+import org.springframework.boot.test.web.client.exchange
+import org.springframework.boot.test.web.client.getForEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
+import org.springframework.http.RequestEntity
 
-
-@WebMvcTest
-@Import(SanitizationService::class, SanitizationAdapter::class, TestcontainersConfiguration::class)
-//@EnableAutoConfiguration
-//@EnableJpaRepositories(basePackages = ["com.example.sanitize.adapters.out.persistence.jpa.models"])
-class InternalSantizationControllerTest(@Autowired val mockMvc: MockMvc) {
+@SpringBootTest(
+  classes = [FlashHomeworkApplication::class],
+  webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureDataJpa
+class InternalSantizationControllerTest(
+  @Autowired val restTemplate: TestRestTemplate,
+  private val getSensitiveWordsPort: GetSensitiveWordsPort,
+) {
 
   @Test
-  fun sanitize() {
-    mockMvc.perform(get("/words"))
-      .andExpect(status().isOk)
-      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-      .andExpect(jsonPath("$.bankCode").value("ING"));
+  fun `getWords - fail when not api key provided`() {
+    val result = restTemplate.getForEntity<JSONObject>("/internal/words")
+
+    result.statusCode shouldBe HttpStatus.FORBIDDEN
+
+  }
+
+  @Test
+  fun `getWords - success when api key provided`() {
+    val result = restTemplate.exchange<List<SensitiveWordDto>>(RequestEntity.get("/internal/words").headers(HttpHeaders().apply {
+      add("X-Internal-Api-Key", "test-internal-key")
+      add("X-Api-Key", "test-key")
+    }).build())
+
+    result.statusCode shouldBe HttpStatus.OK
+    result.body!! shouldBe getSensitiveWordsPort.getAllSensitiveWords()
   }
 
 }

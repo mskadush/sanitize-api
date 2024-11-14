@@ -17,9 +17,5 @@ class TestcontainersConfiguration {
   }
 
   @Bean(name = ["entityManagerFactory"])
-  fun sessionFactory(): LocalSessionFactoryBean {
-    val sessionFactory = LocalSessionFactoryBean()
-
-    return sessionFactory
-  }
+  fun sessionFactory(): LocalSessionFactoryBean = LocalSessionFactoryBean()
 }
