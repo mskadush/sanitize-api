@@ -25,8 +25,6 @@ class InternalSantizationController(
   private val deleteSensitiveWordsUseCase: DeleteSensitiveWordsUseCase,
 ) {
 
-  // TODO: Rest annotations
-  // TODO: Swagger annotation
   @PostMapping("/words")
   @Operation(
     parameters = [

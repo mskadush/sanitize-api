@@ -3,8 +3,8 @@ package com.example.sanitize
 import com.example.sanitize.adapters.`in`.internal.dtos.CreateSensitiveWordRequest
 import com.example.sanitize.adapters.`in`.internal.dtos.SensitiveWordDto
 import com.example.sanitize.adapters.`in`.internal.dtos.SensitiveWordDto.Companion.toSensitiveWordDto
+import com.example.sanitize.adapters.`in`.internal.dtos.UpdateSensitiveWordRequest
 import com.example.sanitize.domain.ports.out.GetSensitiveWordsPort
-import org.json.JSONArray
 import org.json.JSONObject
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -54,6 +54,21 @@ class InternalSantizationControllerTest(
 
     result.statusCode shouldBe HttpStatus.NO_CONTENT
     getSensitiveWordsPort.getAllSensitiveWords().getOrThrow()[numWords].text shouldBe "added"
+  }
+
+  @Test
+  fun `updateSensitiveWords - success when api key provided`() {
+    val original = getSensitiveWordsPort.getAllSensitiveWords().getOrThrow()[0].text
+    val newValue = "changed"
+    val result = restTemplate.exchange<SensitiveWordDto>(RequestEntity.put("/internal/words/0").headers(HttpHeaders().apply {
+      add("X-Internal-Api-Key", "test-internal-key")
+    }).body(listOf(UpdateSensitiveWordRequest(newValue = newValue))))
+
+    result.statusCode shouldBe HttpStatus.OK
+    val currentValue = getSensitiveWordsPort.getAllSensitiveWords().getOrThrow()[0].text
+    original shouldNotBe newValue
+    currentValue shouldBe newValue
+    result.body!!.text shouldBe newValue
   }
 
 }
