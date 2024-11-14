@@ -57,6 +57,20 @@ class InternalSantizationControllerTest(
   }
 
   @Test
+  fun `removeSensitiveWords - success when api key provided`() {
+    val originalFirstWord = getSensitiveWordsPort.getAllSensitiveWords().getOrThrow()[0]
+    val wordId = 0
+    val result = restTemplate.exchange<List<SensitiveWordDto>>(RequestEntity.delete("/internal/words/$wordId").headers(HttpHeaders().apply {
+      add("X-Internal-Api-Key", "test-internal-key")
+    }).build())
+
+    result.statusCode shouldBe HttpStatus.NO_CONTENT
+    result.getOrThrow().first() shouldBe originalFirstWord
+    getSensitiveWordsPort.getAllSensitiveWords().getOrThrow().none { it.id == 0 } shouldBe true
+    
+  }
+
+  @Test
   fun `updateSensitiveWords - success when api key provided`() {
     val original = getSensitiveWordsPort.getAllSensitiveWords().getOrThrow()[0].text
     val newValue = "changed"

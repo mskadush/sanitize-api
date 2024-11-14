@@ -34,6 +34,8 @@ The application supports both internal and external API authentication:
 GitHub Actions runs the CI pipeline, covering build, test, and Docker image creation. The CI pipeline stages can be simplified into:
 1. **Build**: Compiles the code.
 2. **Test**: Runs unit and integration tests.
+3. **Code Quality Check**: Runs static code analysis on the code to ensure no vulnerable or hard to maintain code is commited and coding standards are maintained.
+4. **Dependency Vulnerability Scan**: Review all dependencies used by the project to see if any know vulnerabilities have been reported on them. If reported, an upgrade of the depency will be required.
 3. **Package**: Packages the application and builds the Docker image, then publishes it to ECR.
 
 ### Building the Docker Image
